@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Constant</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --maroon: #5a0000;
+            --off-white: #fdfaf5; 
+        }
+
+        body {
+            background-color: var(--off-white);
+            margin: 0;
+            color: #333;
+            font-family: 'Lora', serif;
+            position: relative;
+            overflow-x: hidden;
+            /* CRUMPLED CREASES */
+            background-image: 
+                linear-gradient(135deg, rgba(0,0,0,0.04) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(0,0,0,0.04) 25%, transparent 25%),
+                linear-gradient(45deg, rgba(255,255,255,0.5) 25%, transparent 25%),
+                linear-gradient(315deg, rgba(255,255,255,0.5) 25%, transparent 25%);
+            background-size: 150px 150px;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.15;
+            background: url("https://www.transparenttextures.com/patterns/stardust.png");
+        }
+
+        section, div { position: relative; z-index: 5; }
+
+        #music-container {
+            position: fixed;
+            top: 20px; right: 20px; z-index: 1000;
+        }
+
+        .music-btn {
+            background: var(--maroon);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Playfair Display', serif;
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1 { font-family: 'Playfair Display', serif; font-size: 4.5rem; color: var(--maroon); margin: 0; }
+
+        .envelope-container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .envelope {
+            position: relative;
+            width: 400px;
+            height: 260px;
+            background: #e6ded3;
+            box-shadow: 20px 30px 60px rgba(0,0,0,0.25);
+            cursor: pointer;
+        }
+
+        .envelope::before {
+            content: "";
+            position: absolute;
+            top: 0; z-index: 4;
+            border-left: 200px solid transparent;
+            border-right: 200px solid transparent;
+            border-top: 140px solid #d8cdbe;
+            transform-origin: top;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .envelope.open::before { transform: rotateX(180deg); z-index: 0; }
+
+        .seal {
+            position: absolute;
+            top: 105px; left: 165px;
+            width: 75px; height: 75px;
+            background: radial-gradient(circle at 30% 30%, #8b0000, #4a0000);
+            border-radius: 48% 52% 45% 55%;
+            z-index: 5;
+            box-shadow: 3px 6px 15px rgba(0,0,0,0.5), inset 2px 2px 8px rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.5s;
+        }
+
+        .seal::after {
+            content: "♔"; 
+            color: rgba(0,0,0,0.4);
+            font-size: 2.8rem;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.1);
+        }
+
+        .envelope.open .seal { opacity: 0; transform: scale(0); }
+
+        .letter {
+            position: absolute;
+            bottom: 10px; left: 20px;
+            width: 360px;
+            background: #fff;
+            padding: 50px;
+            box-sizing: border-box;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+            z-index: 2;
+            opacity: 0;
+            transition: 0.8s;
+            max-height: 200px;
+            overflow: hidden;
+            background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+        }
+
+        .envelope.open .letter {
+            opacity: 1;
+            transform: translateY(-420px);
+            width: 90vw;
+            max-width: 800px;
+            height: auto;
+            max-height: 80vh;
+            left: -50%; right: -50%;
+            margin: auto;
+            overflow-y: auto;
+        }
+
+        .letter p { margin-bottom: 25px; font-size: 1.2rem; line-height: 1.8; }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 50px;
+            padding: 100px 20px;
+        }
+
+        .photo-card {
+            background: white;
+            padding: 15px 15px 50px 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 280px;
+            transform: rotate(-1.5deg);
+        }
+
+        .final-area { text-align: center; padding: 180px 20px; }
+        .gift-box { font-size: 140px; cursor: pointer; transition: 0.3s; }
+        #thanks { display: none; font-family: 'Playfair Display', serif; font-size: 3.5rem; color: var(--maroon); }
+
+    </style>
+</head>
+<body>
+
+    <div id="music-container">
+        <button class="music-btn" onclick="toggleMusic()">🎵 Play Music</button>
+        <audio id="birthday-song" loop>
+            <source src="C:\Users\acer\Downloads\aarushi bday song.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <section class="hero">
+        <p>A tribute to a constant soul</p>
+        <h1>February 2nd</h1>
+        <div style="font-size: 2rem; color: var(--maroon); margin-top: 15px;">❧</div>
+    </section>
+
+    <div class="gallery">
+        <div class="photo-card"><img src="C:\Users\acer\Downloads\Amazing, even with weird glasses..jpg" style="width:100%"><p>Amazing, even with weird glasses.</p></div>
+        <div class="photo-card" style="transform: rotate(2deg);"><img src="C:\Users\acer\Downloads\Grace in every moment..jpg" style="width:100%"><p>Grace in every moment.</p></div>
+        <div class="photo-card"><img src="C:\Users\acer\Downloads\The candid, tree-side peace..jpg" style="width:100%"><p>The candid, tree-side peace.</p></div>
+    </div>
+
+    <div class="envelope-container">
+        <div class="envelope" onclick="this.classList.toggle('open')">
+            <div class="seal"></div>
+            <div class="letter">
+                <p><strong>To my constant,</strong></p>
+                <p>They say time is relative, but honestly? I feel like I’ve known you since the beginning of time—or at least since humans figured out how to annoy one another. Whether it’s been five years, ten, or an entire era, you’ve been the one fixed point in my world that hasn’t moved.</p>
+                <p>I know I’m not exactly 'Human of the Year' material. I’m the first to admit that I don’t always handle social interactions with what people call 'grace.' My settings are usually toggled to 'Awkward' or 'Blunt,' and I know I don’t always act the way society—or even you—might expect. Around most humans, I’m a bit of a lost cause. But despite my glitchy social skills and my refusal to act like a 'proper' person, I hope you know that you are one of the very few people I genuinely value. I’m incredibly proud of you, even if I don’t always have the right words to say it without making it weird.</p>
+                <p>I see how you move through the world, and I see the weight you carry. I know people—like Dhwani—treat you like a human dumping ground for their crises. It’s actually impressive how you listen to all that drama, offer a perfectly logical solution, and then watch them completely ignore it. Here’s a tip from someone who isn't great with people: your advice is a masterpiece. If they choose to leave it unread, that’s on them. Don't let their refusal to grow become a weight on your shoulders. You’re the friend, not the designated problem-solver for the world.</p>
+                <p>I know things might be heavy for you right now, and I know you’d rather bury those issues in a deep, dark hole than talk about them. That’s fine. But just remember: you have always been there when I reached out. You never pulled back, even when I was probably being a lot to deal with.</p>
+                <p>So, here is the 'aftertaste' I want you to keep: I am here. Just as you’ve been my constant, I am yours—even if I’m an awkward, socially-stunted version of one. If the world gets too loud, you can always count on me to be just as stubborn about staying as you’ve been.</p>
+                <p><strong>Happy Birthday. Thank you for not giving up on me just yet.</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="gallery">
+        <div class="photo-card" style="transform: rotate(1deg);"><img src="C:\Users\acer\Downloads\Years of us..jpg" style="width:100%"><p>Years of us.</p></div>
+        <div class="photo-card" style="transform: rotate(-1.5deg);"><img src="C:\Users\acer\Downloads\The constant through it all..jpg" style="width:100%"><p>The constant through it all.</p></div>
+    </div>
+
+    <section class="final-area">
+        <div class="gift-box" onclick="celebrate()">🎁</div>
+        <h2 id="thanks">Thank you for being there always with me!!</h2>
+    </section>
+
+    <script>
+        function toggleMusic() {
+            var song = document.getElementById("birthday-song");
+            var btn = document.querySelector(".music-btn");
+            song.paused ? (song.play(), btn.innerHTML = "🎵 Pause Music") : (song.pause(), btn.innerHTML = "🎵 Play Music");
+        }
+
+        function celebrate() {
+            document.querySelector('.gift-box').style.display = 'none';
+            document.getElementById('thanks').style.display = 'block';
+            
+            var duration = 10 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 0.2 }, colors: ['#5a0000', '#ffffff'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 0.2 }, colors: ['#5a0000', '#ffffff'] });
+              confetti({ particleCount: 5, angle: 90, spread: 100, origin: { x: 0.5, y: -0.1 }, colors: ['#5a0000', '#ffffff'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    </script>
+</body>
+</html>
