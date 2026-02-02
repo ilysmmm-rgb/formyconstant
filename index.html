@@ -215,7 +215,78 @@
     <section class="final-area">
         <div class="gift-box" onclick="celebrate()">🎁</div>
         <h2 id="thanks">Thank you for being there always with me!!</h2>
-    </section>
+    </section> 
+
+    <section class="reaction-container" style="padding: 80px 20px; text-align: center;">
+    <h3 style="font-family: 'Playfair Display', serif; color: var(--maroon); margin-bottom: 30px;">
+        A Core Memory...
+    </h3>
+    
+    <div class="film-strip">
+        <p class="film-caption">Your lovely reaction! ♡</p>
+        
+        <div class="video-wrapper">
+            <video controls>
+                <source src="aarushireaction.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+</section>
+
+<style>
+    .film-strip {
+        background: #1a1a1a;
+        padding: 40px 0;
+        max-width: 650px;
+        margin: 0 auto;
+        position: relative;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        border-radius: 4px;
+        /* Creating the film holes */
+        background-image: 
+            radial-gradient(circle, #fdfaf5 40%, transparent 40%),
+            radial-gradient(circle, #fdfaf5 40%, transparent 40%);
+        background-size: 30px 30px;
+        background-position: 10px 10px, 10px calc(100% - 10px);
+        background-repeat: repeat-x;
+    }
+
+    .video-wrapper {
+        width: 85%;
+        margin: 0 auto;
+        background: #000;
+        line-height: 0;
+        border: 2px solid #333;
+    }
+
+    .video-wrapper video {
+        width: 100%;
+        display: block;
+    }
+
+    .film-caption {
+        font-family: 'Lora', serif;
+        font-style: italic;
+        color: #ddd;
+        margin-top: -20px;
+        margin-bottom: 25px;
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+    }
+
+    /* Mobile adjustment */
+    @media (max-width: 600px) {
+        .film-strip {
+            max-width: 95%;
+            padding: 30px 0;
+            background-size: 20px 20px;
+        }
+        .film-caption {
+            font-size: 1rem;
+        }
+    }
+</style>
 
     <script>
         function toggleMusic() {
@@ -242,3 +313,4 @@
 </body>
 
 </html>
+
